@@ -55,7 +55,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_circle_area_by_positive(self):
         self.assertEqual(circle.area(1), 3.141592653589793)
-        self.assertEqual(circle.area(1), 12.566370614359172)
+        self.assertEqual(circle.area(2), 12.566370614359172)
 
     def test_circle_area_by_non_positive(self):
         self.assertEqual(circle.area(0), "error")
