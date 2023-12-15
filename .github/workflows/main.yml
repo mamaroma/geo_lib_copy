@@ -7,7 +7,7 @@ on:
       branches: [ "main" ]
 
 jobs:
-    my_build_job:
+    sen_build_job:
       runs-on: ubuntu-latest
       steps:
           - uses: actions/checkout@v3
@@ -15,7 +15,7 @@ jobs:
           - name: unittests
             run: python3 unitests.py
      
-    my_build_job_win:
+    sen_build_job_win:
       runs-on: windows-latest
       steps:
           - uses: actions/checkout@v3
