@@ -1,0 +1,68 @@
+#!/bin/bash
+
+# Создаем именованный канал (FIFO)
+FIFO_FILE="/tmp/my_fifo"
+rm -f $FIFO_FILE
+mkfifo $FIFO_FILE
+
+# Скрипт "Генератор"
+generator() {
+    while true; do
+        echo "Введите команду (+, *, число или QUIT для выхода):"
+        read input
+        echo "$input" > $FIFO_FILE
+        if [[ "$input" == "QUIT" ]]; then
+            break
+        fi
+    done
+}
+
+# Скрипт "Обработчик"
+processor() {
+    mode="add"
+    result=1
+
+    while true; do
+        read input < $FIFO_FILE
+
+        case "$input" in
+            "+")
+                mode="add"
+                echo "Режим изменен на сложение."
+                ;;
+            "*")
+                mode="multiply"
+                echo "Режим изменен на умножение."
+                ;;
+            "QUIT")
+                echo "Завершение работы."
+                break
+                ;;
+            *)
+                if [[ "$input" =~ ^-?[0-9]+$ ]]; then
+                    if [[ "$mode" == "add" ]]; then
+                        result=$((result + input))
+                        echo "Текущий результат (сложение): $result"
+                    else
+                        result=$((result * input))
+                        echo "Текущий результат (умножение): $result"
+                    fi
+                else
+                    echo "Ошибка: неверный ввод."
+                    break
+                fi
+                ;;
+        esac
+    done
+}
+
+# Запуск обработчика в фоновом режиме
+processor &
+
+# Запуск генератора
+generator
+
+# Очистка
+wait
+rm -f $FIFO_FILE
+echo "Скрипт завершен."
